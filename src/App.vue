@@ -1,8 +1,7 @@
 <template>
   <div id="app">
     <img src="./assets/logo.png">
-    <div><h1>כרטוסיישן</h1></div>
-    
+    <div><h1>Punch Card</h1></div>    
     <el-row>
       <el-col :xs="0" :sm="9"><div class="grid-content"></div></el-col>
       <el-col :xs="24" :sm="6"><el-input placeholder="Your Name" v-model="name"></el-input></el-col>
@@ -45,6 +44,9 @@ export default {
   margin-top: 60px;
   margin-left: 20px;
   margin-right: 20px;
+}
+body {
+  background-color: #f5f6f7;
 }
 .punch-btn-container {
   margin-bottom: 20px;
