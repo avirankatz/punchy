@@ -5,7 +5,8 @@ function postPunch(isDirectionIn, name, project) {
     return Axios.post(serverUrl + '/punch', {
         name: name,
         project: project,
-        isDirectionIn: isDirectionIn
+        isDirectionIn: isDirectionIn,
+        time: time
     });
 }
 
