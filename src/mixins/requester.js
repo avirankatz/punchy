@@ -1,7 +1,7 @@
 import Axios from 'axios';
 
 let serverUrl = window.location.port == 8080 ? "http://localhost:3010" : "";
-function postPunch(isDirectionIn, name, project) {
+function postPunch(isDirectionIn, name, project, time) {
     return Axios.post(serverUrl + '/punch', {
         name: name,
         project: project,

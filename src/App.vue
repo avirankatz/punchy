@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import requester from "./mixins/requester";
 
 export default {
   name: "app",

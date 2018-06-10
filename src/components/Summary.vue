@@ -1,10 +1,43 @@
 <template>
   <div id="summary">
+    <div class="block">
+      <el-date-picker
+        v-model="month"
+        type="month"
+        placeholder="Pick a month">
+      </el-date-picker>
+    </div>
     <el-table
+    border
+    show-summary
+    stripe
+    :header-cell-style="{'background-color':'#E4E7ED'}"
+    :data="aggregatedData"
+    style="width: 100%">
+    <el-table-column
+      :filters="filters.name"
+      :filter-method="filterHandler"
+      prop="name"
+      label="Name">
+    </el-table-column>
+    <el-table-column
+      :filters="filters.project"
+      :filter-method="filterHandler"
+      prop="project"
+      label="Project">
+    </el-table-column>
+    <el-table-column
+      prop="duration"
+      label="Duration">
+    </el-table-column>
+  </el-table>
+  <br>
+  <el-table
+    v-if="false"
     border
     stripe
     :header-cell-style="{'background-color':'#E4E7ED'}"
-    :data="tableData"
+    :data="rawData"
     style="width: 100%">
     <el-table-column
       prop="in"
@@ -25,7 +58,7 @@
       label="Project">
     </el-table-column>
     <el-table-column
-      :formatter="calculateElapsedTime"
+      :formatter="formatElapsedTime"
       label="Duration">
     </el-table-column>
   </el-table>
@@ -39,24 +72,79 @@ export default {
   name: "Summary",
   data() {
     return {
-      tableData: []
+      month: '',
+      rawData: [],
+      aggregatedData: [],
+      filters: {
+        name: [],
+        project: []
+      }
     };
   },
   mounted() {
-    this.getSessions().then(res => this.tableData = res.data);
+    this.getSessions().then(res => {
+      this.rawData = res.data;
+      this.aggregateData();
+    });
   },
   mixins: [requester],
   methods: {
+    aggregateData(month) {
+      this.aggregatedData = [];
+      this.rawData.forEach(session => {
+        if (month && new Date(session.in).getMonth() != month.getMonth()) return;
+        let aggregatedItem = this.aggregatedData.find(
+          i => i.name == session.name && i.project == session.project
+        );
+        if (aggregatedItem == null) {
+          aggregatedItem = {
+            name: session.name,
+            project: session.project,
+            duration: 0
+          };
+          this.aggregatedData.push(aggregatedItem);
+        }
+        aggregatedItem.duration += this.calculateElapsedTime(
+          session.in,
+          session.out
+        );
+        if (!this.filters.name.find(i => i.text == session.name))
+          this.filters.name.push({ text: session.name, value: session.name });
+        if (!this.filters.project.find(i => i.text == session.project))
+          this.filters.project.push({
+            text: session.project,
+            value: session.project
+          });
+      });
+      this.aggregatedData.forEach(i => (i.duration = i.duration.toFixed(2)));
+    },
+
     formatDate(row, column, jsonDate) {
       return new Date(jsonDate).toLocaleString();
     },
 
-    calculateElapsedTime(row, col, cell, index) {
-      let start = new Date(this.tableData[index].in);
-      let end = new Date(this.tableData[index].out);
-      let duration = new Date(end-start);
+    formatElapsedTime(row, col, cell, index) {
+      return this.calculateElapsedTime(
+        this.rawData[index].in,
+        this.rawData[index].out
+      ).toFixed(2);
+    },
+
+    calculateElapsedTime(start, end) {
+      let startDate = new Date(start);
+      let endDate = new Date(end);
+      let duration = new Date(endDate - startDate);
       return duration.getTime() / (1000 * 60 * 60);
-      
+    },
+
+    filterHandler(value, row, column) {
+      const property = column["property"];
+      return row[property] === value;
+    }
+  },
+  watch: {
+    month: function(val) {
+      this.aggregateData(val);
     }
   }
 };
@@ -68,5 +156,9 @@ export default {
 .el-table tr,
 .el-table th {
   background: transparent !important;
+}
+.block {
+  text-align: center;
+  margin-bottom: 30px;
 }
 </style>
