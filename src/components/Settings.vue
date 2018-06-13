@@ -69,7 +69,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogUserVisible = false">Cancel</el-button>
+        <el-button @click="dialogProjectVisible = false">Cancel</el-button>
         <el-button type="primary" @click="addProject">Confirm</el-button>
       </span>
     </el-dialog>
