@@ -1,6 +1,6 @@
 import Axios from 'axios';
 
-let serverUrl = window.location.port == 8080 ? "http://localhost:3010" : "https://us-central1-punchcard-bc706.cloudfunctions.net";
+let serverUrl = window.location.port == 8080 ? "http://localhost:3010" : "";
 function postPunch(isDirectionIn, name, project, time) {
     return Axios.post(serverUrl + '/punch', {
         name: name,
