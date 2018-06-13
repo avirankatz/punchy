@@ -10,18 +10,19 @@ app.use(cors());
 app.use(express.static('../dist'));
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded());
+
 app.post('/punch', (req, res) => {
-    let name = req.body.name;
+    let username = req.body.username;
     let project = req.body.project;
     let isDirectionIn = req.body.isDirectionIn;
     let time = req.body.time;
-    if (!name || !project || isDirectionIn == null) res.status(400);
+    if (!username || !project || isDirectionIn == null) res.status(400);
     else {
-        savePunch(isDirectionIn, name, project, time);
+        savePunch(isDirectionIn, username, project, time);
     }
     res.json({ status: res.statusCode });
 });
-app.get('/sessions', (req,res) => {
+app.get('/sessions', (req, res) => {
     MongoClient.connect(mongoUrl, (err, client) => {
         let db = client.db(dbName);
         db.collection('sessions').find().toArray((error, result) => {
@@ -29,31 +30,66 @@ app.get('/sessions', (req,res) => {
         });
     })
 });
-app.listen(3010, () => console.log("App is listening on port 3010!"));
+app.get('/usersAndProjects', (req, res) => {
+    MongoClient.connect(mongoUrl, (err, client) => {
+        let db = client.db(dbName);
+        db.collection('users').find().toArray()
+            .then(userDocs => {
+                db.collection('projects').find().toArray().then(projectDocs => {
+                    res.json({ users: userDocs, projects: projectDocs });
+                });
+            });
+    });
+});
+app.post('/user', (req, res) => {
+    let user = req.body;
+    MongoClient.connect(mongoUrl).then(client => {
+        let db = client.db(dbName);
+        db.collection('users').findOneAndUpdate({ username: user.username }, { $set: user }, { upsert: true })
+            .then(result => res.json('user added successfully.'))
+            .catch(err => res.json(err));
+    });
+});
+app.get('/users', (req, res) => {
+    MongoClient.connect(mongoUrl).then(client => {
+        client.db(dbName).collection('users').find().toArray()
+            .then(docs => res.json(docs))
+            .catch(err => res.json(err));
+    });
+});
+app.post('/project', (req, res) => {
+    let project = req.body;
+    MongoClient.connect(mongoUrl).then(client => {
+        let db = client.db(dbName);
+        db.collection('projects').findOneAndUpdate({ slug: project.name }, { $set: project }, { upsert: true })
+            .then(result => res.json('project added successfully.'))
+            .catch(err => res.json(err));
+    });
+});
 
 /**
  * Create a new session for the punch. 
  * If the user has an existing session, punch out of it and move it to sessions collection.
  * @param {boolean} isDirectionIn direction of punch. true = in; false = out
- * @param {string} name user who punched in
+ * @param {string} username user who punched in
  * @param {string} project project that was punched in
  * @param {string} time time of punch
  */
-function savePunch(isDirectionIn, name, project, time) {
+function savePunch(isDirectionIn, username, project, time) {
     let now = time ? time : new Date().toJSON();
     MongoClient.connect(mongoUrl, (err, client) => {
         let db = client.db(dbName);
         let activeSessionsCollection = db.collection('activeSessions');
-        activeSessionsCollection.findOneAndDelete({ name: name }, (err, result) => {
+        activeSessionsCollection.findOneAndDelete({ username: username }, (err, result) => {
             if (result.value != null) {
                 let session = result.value;
                 session.out = now;
                 db.collection('sessions').insertOne(session).then(() => {
                     if (isDirectionIn)
-                        createNewSession(name, project, now, activeSessionsCollection);
+                        createNewSession(username, project, now, activeSessionsCollection);
                 });
             } else if (isDirectionIn) {
-                createNewSession(name, project, now, activeSessionsCollection);
+                createNewSession(username, project, now, activeSessionsCollection);
             }
         });
     });
@@ -61,15 +97,17 @@ function savePunch(isDirectionIn, name, project, time) {
 
 /**
  * Inserts a new session to active sessions collection
- * @param {string} name user of session
+ * @param {string} username user of session
  * @param {string} project project of session
  * @param {String} punchInTime punch in time in json format
  * @param {any} activeSessionsCollection Monngo collection of active sessions
  */
-function createNewSession(name, project, punchInTime, activeSessionsCollection) {
+function createNewSession(username, project, punchInTime, activeSessionsCollection) {
     activeSessionsCollection.insertOne({
-        name: name,
+        username: username,
         project: project,
         in: punchInTime
     });
 }
+
+app.listen(3020, () => console.log("App is listening on port 3020!"));

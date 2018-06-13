@@ -9,8 +9,8 @@
         <el-row class="buttom-margin">
           <el-col :xs="0" :sm="9"><div class="grid-content"></div></el-col>
           <el-col :xs="24" :sm="6">
-            <el-select v-model="name" placeholder="Your Name">
-            <el-option v-for="item in names" :label="item" :key="item" :value="item"></el-option>
+            <el-select v-model="selectedUser" placeholder="Your Name">
+            <el-option v-for="item in users" :label="item.fname" :key="item._id" :value="item.username"></el-option>
             </el-select>
           </el-col>
           <el-col :xs="0" :sm="9"><div class="grid-content"></div></el-col>
@@ -18,8 +18,8 @@
         <el-row class="buttom-margin">
           <el-col :xs="0" :sm="9"><div class="grid-content"></div></el-col>
           <el-col :xs="24" :sm="6">
-            <el-select v-model="project" placeholder="Project">
-            <el-option v-for="item in projects" :label="item" :key="item" :value="item"></el-option>
+            <el-select v-model="selectedProject" placeholder="Project">
+            <el-option v-for="item in projects" :label="item.name" :key="item._id" :value="item.name"></el-option>
             </el-select>
           </el-col>
           <el-col :xs="0" :sm="9"><div class="grid-content"></div></el-col>
@@ -57,19 +57,19 @@ export default {
   name: "Punch",
   data() {
     return {
-      names: ["Aviran", "Roy", "Debora", "Noa", "Lee", "Ilona"],
-      projects: [
-        "ImageInUs",
-        "Pathways",
-        "Climb for Justice",
-        "Tevel",
-        "Kulna",
-        "Democrasee"
-      ],
+      users: [],
+      projects: [],
       customTime: null,
-      project: "",
-      name: ""
+      selectedProject: "",
+      selectedUser: ""
     };
+  },
+  mounted() {
+    this.getUsersAndProjects().then(res => {
+      this.users = res.data.users;
+      this.projects = res.data.projects;
+      console.log(this.users);
+    });
   },
   mixins: [requester],
   methods: {
@@ -78,30 +78,30 @@ export default {
     },
     punchIn() {
       this.postPunchIn(
-        this.name,
-        this.project,
+        this.selectedUser,
+        this.selectedProject,
         this.customTime ? this.customTime.toJSON() : new Date().toJSON()
       )
         .then(res => {
           if (res.status == 200)
             this.openPunchNotification(
               "Punched in!",
-              "Project: " + this.project
+              "Project: " + this.selectedProject
             );
         })
         .catch(() => console.log("bad"));
     },
     punchOut() {
       this.postPunchOut(
-        this.name,
-        this.project,
+        this.selectedUser,
+        this.selectedProject,
         this.customTime ? this.customTime.toJSON() : new Date().toJSON()
       )
         .then(res => {
           if (res.status == 200)
             this.openPunchNotification(
               "Punched out!",
-              "Project: " + this.project
+              "Project: " + this.selectedProject
             );
         })
         .catch(() => console.log("bad"));

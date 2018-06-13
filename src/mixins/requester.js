@@ -1,9 +1,9 @@
 import Axios from 'axios';
 
-let serverUrl = window.location.port == 8080 ? "http://localhost:3010" : "";
-function postPunch(isDirectionIn, name, project, time) {
+let serverUrl = window.location.port == 8080 ? "http://localhost:3020" : "";
+function postPunch(isDirectionIn, username, project, time) {
     return Axios.post(serverUrl + '/punch', {
-        name: name,
+        username: username,
         project: project,
         isDirectionIn: isDirectionIn,
         time: time
@@ -12,14 +12,26 @@ function postPunch(isDirectionIn, name, project, time) {
 
 export default {
     methods: {
-        postPunchIn(name, project, time) {
-            return postPunch(true, name, project, time);
+        postPunchIn(username, project, time) {
+            return postPunch(true, username, project, time);
         },
-        postPunchOut(name, project, time) {
-            return postPunch(false, name, project, time);
+        postPunchOut(username, project, time) {
+            return postPunch(false, username, project, time);
         },
         getSessions() {
             return Axios.get(`${serverUrl}/sessions`);
+        },
+        getUsers() {
+            return Axios.get(serverUrl + '/users');
+        },
+        getUsersAndProjects() {
+            return Axios.get(`${serverUrl}/usersAndProjects`);
+        },
+        postUser(user) {
+            return Axios.post(serverUrl + '/user', user);
+        },
+        postProject(project) {
+            return Axios.post(serverUrl + '/project', project);
         }
-    }
+    },
 }

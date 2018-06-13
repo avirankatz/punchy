@@ -72,7 +72,8 @@ export default {
   name: "Summary",
   data() {
     return {
-      month: '',
+      month: "",
+      users: {},
       rawData: [],
       aggregatedData: [],
       filters: {
@@ -82,6 +83,11 @@ export default {
     };
   },
   mounted() {
+    this.getUsers().then(res => {
+      res.data.forEach(item => {
+        this.users[item.username] = item.fname;
+      });
+    });
     this.getSessions().then(res => {
       this.rawData = res.data;
       this.aggregateData();
@@ -92,13 +98,15 @@ export default {
     aggregateData(month) {
       this.aggregatedData = [];
       this.rawData.forEach(session => {
-        if (month && new Date(session.in).getMonth() != month.getMonth()) return;
+        if (month && new Date(session.in).getMonth() != month.getMonth())
+          return;
         let aggregatedItem = this.aggregatedData.find(
-          i => i.name == session.name && i.project == session.project
+          i => i.name == session.username && i.project == session.project
         );
         if (aggregatedItem == null) {
           aggregatedItem = {
-            name: session.name,
+            name: this.users[session.username],
+            username: session.username,
             project: session.project,
             duration: 0
           };
@@ -108,8 +116,8 @@ export default {
           session.in,
           session.out
         );
-        if (!this.filters.name.find(i => i.text == session.name))
-          this.filters.name.push({ text: session.name, value: session.name });
+        if (!this.filters.name.find(i => i.text == session.username))
+          this.filters.name.push({ text: session.username, value: session.username });
         if (!this.filters.project.find(i => i.text == session.project))
           this.filters.project.push({
             text: session.project,
