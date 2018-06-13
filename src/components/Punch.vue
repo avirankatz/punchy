@@ -68,7 +68,6 @@ export default {
     this.getUsersAndProjects().then(res => {
       this.users = res.data.users;
       this.projects = res.data.projects;
-      console.log(this.users);
     });
   },
   mixins: [requester],
