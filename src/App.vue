@@ -11,6 +11,10 @@
             <i class="el-icon-document"></i>
             <span slot="title">Summary</span>
           </el-menu-item>
+          <el-menu-item index="1" route="/settings">
+            <i class="el-icon-setting"></i>
+            <span slot="title">Settings</span>
+          </el-menu-item>
         </el-menu>
       </el-aside>    
       <el-main>

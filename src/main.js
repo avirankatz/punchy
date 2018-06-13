@@ -8,6 +8,7 @@ import requester from './mixins/requester'
 import VueRouter from 'vue-router';
 import Punch from './components/Punch.vue';
 import Summary from './components/Summary.vue';
+import Settings from './components/Settings.vue';
 Vue.config.productionTip = false
 Vue.use(ElementUI, { locale });
 Vue.use(VueResource);
@@ -17,6 +18,7 @@ Vue.use(VueRouter);
 const routes = [
   { path: '/', component: Punch },
   { path: '/summary', component: Summary },
+  { path: '/settings', component: Settings },
 ];
 const router = new VueRouter({
   routes // short for `routes: routes`
