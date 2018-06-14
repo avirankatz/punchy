@@ -25,13 +25,16 @@ export default {
             return Axios.get(serverUrl + '/users');
         },
         getUsersAndProjects() {
-            return Axios.get(`${serverUrl}/usersAndProjects`);
+            return Axios.get(`${serverUrl}/users-and-projects`);
         },
         postUser(user) {
             return Axios.post(serverUrl + '/user', user);
         },
         postProject(project) {
             return Axios.post(serverUrl + '/project', project);
+        },
+        postRemoveProject(project) {
+            return Axios.post(serverUrl + '/remove-project', { name: project });
         }
     },
 }

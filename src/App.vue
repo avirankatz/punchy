@@ -101,5 +101,8 @@ h1 {
   .mobile-menu-button {
     visibility: visible;
   }
+  .el-message {
+    min-width: 300px!important;
+  }
 }
 </style>

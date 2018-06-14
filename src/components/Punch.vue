@@ -1,11 +1,8 @@
 <template>
   <div id="punch">
     <el-row class="buttom-margin">
-          <el-col :xs="0" :sm="9"><div class="grid-content"></div></el-col>
-          <el-col :xs="24" :sm="6"><img class="logo" src="../assets/id.png"></el-col>
-          <el-col :xs="0" :sm="9"><div class="grid-content"></div></el-col>
+          <el-col :xs="{span:18,offset:3}" :span="6" :offset="9" ><img class="logo" src="../assets/id.png"></el-col>
         </el-row>
-        <div><h1>Punch Card</h1></div>    
         <el-row class="buttom-margin">
           <el-col :xs="0" :sm="9"><div class="grid-content"></div></el-col>
           <el-col :xs="24" :sm="6">
@@ -107,12 +104,11 @@ export default {
     },
 
     openPunchNotification(ttl, msg) {
-      this.$notify.success({
-        title: ttl,
+      this.$message.success({
+        
         message: msg,
-        showClose: false
+        
       });
-      this.$http;
     }
   }
 };

@@ -30,7 +30,7 @@ app.get('/sessions', (req, res) => {
         });
     })
 });
-app.get('/usersAndProjects', (req, res) => {
+app.get('/users-and-projects', (req, res) => {
     MongoClient.connect(mongoUrl, (err, client) => {
         let db = client.db(dbName);
         db.collection('users').find().toArray()
@@ -63,6 +63,15 @@ app.post('/project', (req, res) => {
         let db = client.db(dbName);
         db.collection('projects').findOneAndUpdate({ slug: project.name }, { $set: project }, { upsert: true })
             .then(result => res.json('project added successfully.'))
+            .catch(err => res.json(err));
+    });
+});
+app.post('/remove-project', (req, res) => {
+    let projectName = req.body.name;
+    MongoClient.connect(mongoUrl).then(client => {
+        let db = client.db(dbName);
+        db.collection('projects').deleteOne({ slug: projectName })
+            .then(result => res.json('project deleted successfully.'))
             .catch(err => res.json(err));
     });
 });

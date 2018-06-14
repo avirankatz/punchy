@@ -87,10 +87,10 @@ export default {
       res.data.forEach(item => {
         this.users[item.username] = item.fname;
       });
-    });
-    this.getSessions().then(res => {
-      this.rawData = res.data;
-      this.aggregateData();
+      this.getSessions().then(res => {
+        this.rawData = res.data;
+        this.aggregateData();
+      });
     });
   },
   mixins: [requester],
@@ -116,8 +116,13 @@ export default {
           session.in,
           session.out
         );
-        if (!this.filters.name.find(i => i.text == session.username))
-          this.filters.name.push({ text: session.username, value: session.username });
+        if (
+          !this.filters.name.find(i => i.text == this.users[session.username])
+        )
+          this.filters.name.push({
+            text: this.users[session.username],
+            value: this.users[session.username]
+          });
         if (!this.filters.project.find(i => i.text == session.project))
           this.filters.project.push({
             text: session.project,

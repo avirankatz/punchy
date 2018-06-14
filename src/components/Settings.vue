@@ -3,7 +3,8 @@
     <el-row :gutter="20">
       <el-col :span="12" :xs="24">
         <h1>Projects</h1>
-        <el-button type="text" @click="dialogProjectVisible = true">+ Add New</el-button>
+        <el-button type="text" @click="dialogAddProjectVisible = true">+ Add New</el-button>
+        <el-button type="text" class="remove-button" @click="dialogRemoveProjectVisible = true">- Remove</el-button>
         <el-table
           border
           stripe
@@ -59,7 +60,7 @@
         <el-button type="primary" @click="addUser">Confirm</el-button>
       </span>
     </el-dialog>
-     <el-dialog title="Add New Project" :visible.sync="dialogProjectVisible" width="400px">
+     <el-dialog title="Add New Project" :visible.sync="dialogAddProjectVisible" width="400px">
       <el-form :model="newProject" label-width="100px">
         <el-form-item label="Name">
           <el-input v-model="newProject.name" auto-complete="off"></el-input>
@@ -69,8 +70,22 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogProjectVisible = false">Cancel</el-button>
+        <el-button @click="dialogAddProjectVisible = false">Cancel</el-button>
         <el-button type="primary" @click="addProject">Confirm</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="Remove Project" :visible.sync="dialogRemoveProjectVisible" width="400px">
+      <el-select v-model="projectToRemove" placeholder="Select Project">
+        <el-option
+          v-for="item in projects"
+          :key="item.name"
+          :label="item.name"
+          :value="item.name">
+        </el-option>
+      </el-select>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogRemoveProjectVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="removeProject">Confirm</el-button>
       </span>
     </el-dialog>
   </div>
@@ -84,9 +99,11 @@ export default {
     return {
       newUser: {},
       newProject: {},
+      projectToRemove: "",
       projects: [],
       users: [],
-      dialogProjectVisible: false,
+      dialogAddProjectVisible: false,
+      dialogRemoveProjectVisible: false,
       dialogUserVisible: false
     };
   },
@@ -101,7 +118,7 @@ export default {
     addUser() {
       this.postUser(this.newUser).then(() =>
         this.$message({
-          message: "Congrats, user added successfully.",
+          message: "User added successfully.",
           type: "success"
         })
       );
@@ -110,11 +127,20 @@ export default {
     addProject() {
       this.postProject(this.newProject).then(() =>
         this.$message({
-          message: "Congrats, project added successfully.",
+          message: "Project added successfully.",
           type: "success"
         })
       );
-      this.dialogProjectVisible = false;
+      this.dialogAddProjectVisible = false;
+    },
+    removeProject() {
+      this.postRemoveProject(this.projectToRemove).then(() =>
+        this.$message({
+          message: "Project removed successfully.",
+          type: "success"
+        })
+      );
+      this.dialogRemoveProjectVisible = false;
     }
   }
 };
@@ -126,5 +152,9 @@ export default {
 .el-table tr,
 .el-table th {
   background: transparent !important;
+}
+.remove-button {
+  color: #f56c6c;
+  float: right;
 }
 </style>
