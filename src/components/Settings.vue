@@ -125,12 +125,13 @@ export default {
       this.dialogUserVisible = false;
     },
     addProject() {
-      this.postProject(this.newProject).then(() =>
+      this.postProject(this.newProject).then(() => {
         this.$message({
           message: "Project added successfully.",
           type: "success"
-        })
-      );
+        });
+        this.projects.push(this.newProject);
+      });
       this.dialogAddProjectVisible = false;
     },
     removeProject() {
