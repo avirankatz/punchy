@@ -35,6 +35,9 @@ export default {
         },
         postRemoveProject(project) {
             return Axios.post(serverUrl + '/remove-project', { name: project });
+        },
+        getActiveSessionForUser(username) {
+            return Axios.get(serverUrl + '/active-session', { params: { username: username } });
         }
     },
 }

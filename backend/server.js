@@ -5,6 +5,8 @@ const app = express();
 const MongoClient = require('mongodb').MongoClient;
 const mongoUrl = "mongodb://sofi:g00dT3ch!@ds227570.mlab.com:27570/punchcard";
 const dbName = "punchcard";
+// const mongoUrl = "mongodb://sofi:g00dT3ch!@ds141870.mlab.com:41870/punchcard-dev";
+// const dbName = "punchcard-dev";
 
 app.use(cors());
 app.use(express.static('../dist'));
@@ -16,7 +18,7 @@ app.post('/punch', (req, res) => {
     let project = req.body.project;
     let isDirectionIn = req.body.isDirectionIn;
     let time = req.body.time;
-    if (!username || !project || isDirectionIn == null) res.status(400);
+    if (!username || isDirectionIn == null || (isDirectionIn && !project)) res.status(400);
     else {
         savePunch(isDirectionIn, username, project, time);
     }
@@ -73,6 +75,16 @@ app.post('/remove-project', (req, res) => {
         db.collection('projects').deleteOne({ slug: projectName })
             .then(result => res.json('project deleted successfully.'))
             .catch(err => res.json(err));
+    });
+});
+app.get('/active-session', (req, res) => {
+    let username = req.query.username;
+    MongoClient.connect(mongoUrl).then(client => {
+        let db = client.db(dbName);
+        db.collection('activeSessions').findOne({username: username}).then(result => {
+            res.json(result);
+        });
+        client.close();
     });
 });
 
