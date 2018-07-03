@@ -125,6 +125,7 @@ export default {
       this.getActiveSessionForUser(this.selectedUser).then(res => {
         console.log(res.data);
         this.activeSession = res.data;
+        this.selectedProject = this.activeSession.project;
       });
     }
   }
