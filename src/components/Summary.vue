@@ -4,7 +4,7 @@
       <el-date-picker
         v-model="month"
         type="month"
-        placeholder="Pick a month">
+        placeholder="Filter by month">
       </el-date-picker>
     </div>
     <el-table
@@ -15,18 +15,31 @@
     :data="aggregatedData"
     style="width: 100%">
     <el-table-column
+      min-width="150px"
+      prop="in"
+      label="In">
+    </el-table-column>
+    <el-table-column
+      min-width="150px"
+      prop="out"
+      label="Out">
+    </el-table-column>
+    <el-table-column
+      min-width="150px"
       :filters="filters.name"
       :filter-method="filterHandler"
       prop="name"
       label="Name">
     </el-table-column>
     <el-table-column
+      min-width="150px"
       :filters="filters.project"
       :filter-method="filterHandler"
       prop="project"
       label="Project">
     </el-table-column>
     <el-table-column
+      min-width="150px"
       prop="duration"
       label="Duration">
     </el-table-column>
@@ -40,24 +53,29 @@
     :data="rawData"
     style="width: 100%">
     <el-table-column
+      min-width="150px"
       prop="in"
       :formatter="formatDate"
       label="In">
     </el-table-column>
     <el-table-column
+      min-width="150px"
       prop="out"
       :formatter="formatDate"
       label="Out">
     </el-table-column>
     <el-table-column
+      min-width="150px"
       prop="name"
       label="Name">
     </el-table-column>
     <el-table-column
+      min-width="150px"
       prop="project"
       label="Project">
     </el-table-column>
     <el-table-column
+      min-width="150px"
       :formatter="formatElapsedTime"
       label="Duration">
     </el-table-column>
@@ -108,6 +126,8 @@ export default {
             name: this.users[session.username],
             username: session.username,
             project: session.project,
+            in: new Date(session.in).toLocaleString('he-IL'),
+            out: new Date(session.out).toLocaleString('he-IL'),
             duration: 0
           };
           this.aggregatedData.push(aggregatedItem);
