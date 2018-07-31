@@ -9,6 +9,7 @@ import VueRouter from 'vue-router';
 import Punch from './components/Punch.vue';
 import Summary from './components/Summary.vue';
 import Settings from './components/Settings.vue';
+import './registerServiceWorker'
 Vue.config.productionTip = false
 Vue.use(ElementUI, { locale });
 Vue.use(VueResource);
