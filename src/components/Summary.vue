@@ -126,8 +126,20 @@ export default {
             name: this.users[session.username],
             username: session.username,
             project: session.project,
-            in: new Date(session.in).toLocaleString('he-IL'),
-            out: new Date(session.out).toLocaleString('he-IL'),
+            in: new Date(session.in).toLocaleString("he-IL", {
+              year: "2-digit",
+              month: "2-digit",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit"
+            }),
+            out: new Date(session.out).toLocaleString("he-IL", {
+              year: "2-digit",
+              month: "2-digit",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit"
+            }),
             duration: 0
           };
           this.aggregatedData.push(aggregatedItem);
