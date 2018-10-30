@@ -20,7 +20,7 @@
     "@vue/cli-plugin-babel": "^3.0.0-beta.10",
     "@vue/cli-plugin-eslint": "^3.0.0-beta.10",
     "@vue/cli-plugin-pwa": "^3.0.0-rc.10",
-    "@vue/cli-service": "^3.0.0-beta.10",
+    "@vue/cli-service": "^3.0.5",
     "vue-template-compiler": "^2.5.13",
     "workbox-build": "^3.2.0"
   },
