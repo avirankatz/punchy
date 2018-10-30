@@ -3,10 +3,10 @@ const bodyparser = require('body-parser');
 const cors = require('cors');
 const app = express();
 const MongoClient = require('mongodb').MongoClient;
-const mongoUrl = "mongodb://sofi:g00dT3ch!@ds227570.mlab.com:27570/punchcard";
-const dbName = "punchcard";
-// const mongoUrl = "mongodb://sofi:g00dT3ch!@ds141870.mlab.com:41870/punchcard-dev";
-// const dbName = "punchcard-dev";
+// const mongoUrl = "mongodb://sofi:g00dT3ch!@ds227570.mlab.com:27570/punchcard";
+// const dbName = "punchcard";
+const mongoUrl = "mongodb://sofi:g00dT3ch!@ds141870.mlab.com:41870/punchcard-dev";
+const dbName = "punchcard-dev";
 
 app.use(cors());
 app.use(express.static('../dist'));
