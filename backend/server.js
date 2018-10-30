@@ -9,9 +9,9 @@ const mongoUrl = "mongodb://sofi:g00dT3ch!@ds141870.mlab.com:41870/punchcard-dev
 const dbName = "punchcard-dev";
 
 app.use(cors());
-app.use(express.static('../dist'));
+app.use(express.static('dist'));
 app.use(bodyparser.json());
-app.use(bodyparser.urlencoded());
+app.use(bodyparser.urlencoded({extended: true}));
 
 app.post('/punch', (req, res) => {
     let username = req.body.username;

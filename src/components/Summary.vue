@@ -9,6 +9,7 @@
     </div>
     <el-table
     border
+    @row-click="rowClicked"
     show-summary
     stripe
     :header-cell-style="{'background-color':'#E4E7ED'}"
@@ -44,42 +45,19 @@
       label="Duration">
     </el-table-column>
   </el-table>
-  <br>
-  <el-table
-    v-if="false"
-    border
-    stripe
-    :header-cell-style="{'background-color':'#E4E7ED'}"
-    :data="rawData"
-    style="width: 100%">
-    <el-table-column
-      min-width="150px"
-      prop="in"
-      :formatter="formatDate"
-      label="In">
-    </el-table-column>
-    <el-table-column
-      min-width="150px"
-      prop="out"
-      :formatter="formatDate"
-      label="Out">
-    </el-table-column>
-    <el-table-column
-      min-width="150px"
-      prop="name"
-      label="Name">
-    </el-table-column>
-    <el-table-column
-      min-width="150px"
-      prop="project"
-      label="Project">
-    </el-table-column>
-    <el-table-column
-      min-width="150px"
-      :formatter="formatElapsedTime"
-      label="Duration">
-    </el-table-column>
-  </el-table>
+  <el-dialog
+    title="Edit Session"
+    :visible.sync="dialogVisible"
+    width="300px"
+    >
+    <el-select v-model="rowUnderEdit.name">
+      <el-option v-for="item in users" :label="item" :key="item" :value="item"></el-option>
+    </el-select>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="dialogVisible = false">Cancel</el-button>
+      <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
+    </span>
+  </el-dialog>
   </div>
 </template>
 
@@ -90,14 +68,16 @@ export default {
   name: "Summary",
   data() {
     return {
-      month: "",
-      users: {},
-      rawData: [],
       aggregatedData: [],
+      dialogVisible: false,
       filters: {
         name: [],
         project: []
-      }
+      },
+      month: "",
+      rawData: [],
+      users: {},
+      rowUnderEdit: {},
     };
   },
   mounted() {
@@ -185,6 +165,10 @@ export default {
     filterHandler(value, row, column) {
       const property = column["property"];
       return row[property] === value;
+    },
+    rowClicked(row) {
+      this.dialogVisible = true;
+      this.rowUnderEdit = row;
     }
   },
   watch: {
