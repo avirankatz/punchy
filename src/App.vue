@@ -5,7 +5,7 @@
         <el-menu :collapse="true"  background-color="transparent" :router="true">
           <el-menu-item index="0" route="/">
             <i class="el-icon-time"></i>
-            <span slot="title">Punchcard</span>
+            <span slot="title">Punchy</span>
           </el-menu-item>
           <el-menu-item index="1" route="/summary">
             <i class="el-icon-document"></i>
